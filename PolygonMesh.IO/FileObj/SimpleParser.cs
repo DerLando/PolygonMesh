@@ -83,7 +83,7 @@ namespace PolygonMesh.IO.FileObj
 		private static int[] ConvertToFace(string line)
 		{
 			var parts = line.Split(' ');
-			return (from part in parts.Skip(1) select int.Parse(part)).ToArray();
+			return (from part in parts.Skip(1) select int.Parse(part) - 1).ToArray();
 		}
 	}
 }

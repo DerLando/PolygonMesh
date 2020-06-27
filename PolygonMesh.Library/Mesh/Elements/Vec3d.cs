@@ -16,5 +16,19 @@ namespace PolygonMesh.Library.Mesh.Elements
             Y = y;
             Z = z;
         }
+
+        /// <summary>
+        /// Determines if two <see cref="Vec3d"/> are equal under tolerance
+        /// </summary>
+        /// <param name="other"></param>
+        /// <param name="epsilon"></param>
+        /// <returns></returns>
+        public bool EpsilonEquals(in Vec3d other, double epsilon)
+        {
+            return
+                Math.Abs(other.X - X) < epsilon &&
+                Math.Abs(other.Y - Y) < epsilon &&
+                Math.Abs(other.Z - Z) < epsilon;
+        }
     }
 }
