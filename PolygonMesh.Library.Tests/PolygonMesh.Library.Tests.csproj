@@ -14,7 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PolygonMesh.IO\PolygonMesh.IO.csproj" />
     <ProjectReference Include="..\PolygonMesh.Library\PolygonMesh.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

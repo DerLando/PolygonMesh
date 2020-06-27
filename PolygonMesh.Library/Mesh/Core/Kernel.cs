@@ -60,7 +60,7 @@ namespace PolygonMesh.Library.Mesh.Core
 
         public IEnumerable<Vertex> GetFaceVertices(int faceIndex)
         {
-            return VertexIterator.FromFace(_faces.GetElement(faceIndex));
+            return FaceVertexIterator.FromFace(_faces.GetElement(faceIndex));
         }
     }
 }
