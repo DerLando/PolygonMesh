@@ -1,5 +1,6 @@
 ﻿using PolygonMesh.Library.Mesh.Elements;
 using PolygonMesh.Library.Mesh.Iterators;
+using PolygonMesh.Library.Mesh.TopologyOperations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,6 +34,47 @@ namespace PolygonMesh.Library.Mesh.Core
 
         #endregion
 
+        #region public topology methods
+
+        /// <summary>
+        /// Inserts a <see cref="HalfEdge"/> instance into the kernel.
+        /// For this to work the halfedge needs linking information present on its
+        /// <see cref="HalfEdge.Next"/> and <see cref="HalfEdge.Previous" /> properties.
+        /// </summary>
+        /// <param name="edge"></param>
+        /// <returns>true on success, false on failure</returns>
+        public bool InsertEdge(HalfEdge edge)
+        {
+            // if no linking information is present on the edge, we have to abort
+            if (edge.Previous is null | edge.Next is null)
+                return false;
+
+            edge.Previous.Next = edge;
+            edge.Next.Previous = edge;
+
+            //EdgeLinker.LinkOrderedEdgeCollection(new[] { edge.Previous, edge, edge.Next });
+
+            _halfEdges.Add(edge);
+
+            return true;
+        }
+
+        public bool InsertFace(Face face)
+        {
+            // if no linking information is present, we have to abort
+            if (face.Start is null) return false;
+
+            _faces.Add(face);
+            return true;
+        }
+
+        public void SplitFace(HalfEdge start, HalfEdge end)
+        {
+            TopologyOperation.SplitFace(start, end, this);
+        }
+
+        #endregion
+
         public void AddNewFace(IEnumerable<Vec3d> positions)
         {
             var face = new Face();
@@ -54,7 +96,7 @@ namespace PolygonMesh.Library.Mesh.Core
                 edges.Add(halfEdge);
             }
 
-            EdgeLinker.LinkOrderedEdgeCollection(ref edges);
+            EdgeLinker.LinkOrderedEdgeCollection(edges);
 
             face.Start = edges[0];
 
@@ -91,7 +133,7 @@ namespace PolygonMesh.Library.Mesh.Core
                     faceEdges.Add(edge);
                 }
 
-                EdgeLinker.LinkOrderedEdgeCollection(ref faceEdges);
+                EdgeLinker.LinkOrderedEdgeCollection(faceEdges);
 
                 newFaces[i].Start = faceEdges[0];
 

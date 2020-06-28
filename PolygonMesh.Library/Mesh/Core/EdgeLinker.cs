@@ -30,7 +30,11 @@ namespace PolygonMesh.Library.Mesh.Core
             //Debug.Assert(edges.All(e => e.Pair.Pair == e));
         }
 
-        public static void LinkOrderedEdgeCollection(ref List<HalfEdge> edges)
+        /// <summary>
+        /// Establishes a circular link for an ordered collection of <see cref="HalfEdge"/>s
+        /// </summary>
+        /// <param name="edges"></param>
+        public static void LinkOrderedEdgeCollection(IReadOnlyList<HalfEdge> edges)
         {
             for (int i = 0; i < edges.Count; i++)
             {

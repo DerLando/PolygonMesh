@@ -122,6 +122,17 @@ namespace PolygonMesh.Library.Mesh.Core
             return (from neighbor in neighbors select FromVertex(neighbor)).ToList();
         }
 
+        /// <summary>
+        /// Placeholder method
+        /// </summary>
+        /// <param name="faceIndex"></param>
+        public void SplitFace(int faceIndex)
+        {
+            var start = _kernel.Faces[faceIndex].Start;
+            var end = start.Next.Next;
+            _kernel.SplitFace(start, end);
+        }
+
         #endregion
 
     }
