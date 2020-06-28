@@ -18,13 +18,13 @@ namespace PolygonMesh.Library.Tests
             // Arrange
             var path = "D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\cube.obj";
             var vecs = SimpleParser.Parse(path, out var faces);
-            var kernel = Kernel.CreateFromPositions(vecs, faces);
+            var mesh = Mesh.Core.Mesh.CreateFromPositions(vecs, faces);
 
             // Act
-            var ringIterator = new VertexRingIterator(kernel.GetFaceVertices(0).First());
+            var neighbors = mesh.GetVertexNeighbours(0);
 
             // Assert
-            Assert.AreEqual(3, ringIterator.Count());
+            Assert.AreEqual(3, neighbors.Count);
         }
     }
 }

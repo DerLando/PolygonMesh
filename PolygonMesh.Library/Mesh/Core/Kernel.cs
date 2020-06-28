@@ -8,7 +8,11 @@ using System.Text;
 
 namespace PolygonMesh.Library.Mesh.Core
 {
-    public class Kernel
+    /// <summary>
+    /// The mesh kernel, handles topology operations on a mesh.
+    /// Basically a repository with additional functionality
+    /// </summary>
+    internal class Kernel
     {
         #region private fields
 
@@ -20,10 +24,12 @@ namespace PolygonMesh.Library.Mesh.Core
 
         #region public properties
 
-        public int VertexCount => _vertices.Count;
-        public int FaceCount => _faces.Count;
-        public int HalfEdgeCount => _halfEdges.Count;
-        public IEnumerable<HalfEdge> GetEdges => _halfEdges;
+        internal int VertexCount => _vertices.Count;
+        internal int FaceCount => _faces.Count;
+        internal int HalfEdgeCount => _halfEdges.Count;
+        internal IReadOnlyList<HalfEdge> Edges => _halfEdges.AsReadOnly();
+        internal IReadOnlyList<Vertex> Vertices => _vertices.AsReadOnly();
+        internal IReadOnlyList<Face> Faces => _faces.AsReadOnly();
 
         #endregion
 
@@ -44,6 +50,7 @@ namespace PolygonMesh.Library.Mesh.Core
 
                 vertex.Outgoing = halfEdge;
 
+                vertices.Add(vertex);
                 edges.Add(halfEdge);
             }
 
@@ -51,11 +58,12 @@ namespace PolygonMesh.Library.Mesh.Core
 
             face.Start = edges[0];
 
+            _vertices.AddRange(vertices);
             _faces.Add(face);
             _halfEdges.AddRange(edges);
         }
 
-        public static Kernel CreateFromPositions(IReadOnlyList<Vec3d> positions, IReadOnlyList<IReadOnlyList<int>> faces)
+        internal static Kernel CreateFromPositions(IReadOnlyList<Vec3d> positions, IReadOnlyList<IReadOnlyList<int>> faces)
         {
             var vertices = (from position in positions select new Vertex { Position = position }).ToArray();
             var newFaces = new Face[faces.Count];
@@ -102,7 +110,7 @@ namespace PolygonMesh.Library.Mesh.Core
 
         public IEnumerable<Vertex> GetFaceVertices(int faceIndex)
         {
-            return new FaceVertexIterator(_faces.GetElement(faceIndex));
+            return new FaceVertexIterator(_faces[faceIndex]);
         }
     }
 }

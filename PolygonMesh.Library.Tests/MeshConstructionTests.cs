@@ -9,10 +9,10 @@ using System.Text;
 namespace PolygonMesh.Library.Tests
 {
     [TestClass]
-    public class KernelTests
+    public class MeshConstructionTests
     {
         [TestMethod]
-        public void AddNewFace_ShouldWork()
+        public void SingleFace_ShouldWork()
         {
             // Arrange
             var locations = new[]
@@ -21,16 +21,18 @@ namespace PolygonMesh.Library.Tests
                 new Vec3d(1, 1, 0),
                 new Vec3d(-1, 1, 0)
             };
-            var kernel = new Kernel();
 
             // Act
-            kernel.AddNewFace(locations);
-            var verts = kernel.GetFaceVertices(0).ToArray();
+            var mesh = Mesh.Core.Mesh.CreateSingleFace(locations);
+            var vertices = mesh.Vertices;
 
             // Assert
-            Assert.AreEqual(1, kernel.FaceCount);
-            Assert.AreEqual(3, kernel.HalfEdgeCount);
-            Assert.AreEqual(3, verts.Length);
+            Assert.AreEqual(1, mesh.FaceCount);
+            Assert.AreEqual(3, mesh.HalfEdgeCount);
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.AreEqual(locations[i], mesh.Vertices[i].Position);
+            }
         }
     }
 }

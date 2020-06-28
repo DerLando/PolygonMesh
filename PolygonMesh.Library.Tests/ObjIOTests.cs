@@ -32,12 +32,12 @@ namespace PolygonMesh.Library.Tests
 
             // Act
             var vecs = SimpleParser.Parse(path, out var faces);
-            var kernel = Kernel.CreateFromPositions(vecs, faces);
+            var mesh = Mesh.Core.Mesh.CreateFromPositions(vecs, faces);
 
             // Assert
-            Assert.AreEqual(vecs.Length, kernel.VertexCount);
-            Assert.AreEqual(faces.Length, kernel.FaceCount);
-            Assert.AreEqual(24, kernel.HalfEdgeCount);
+            Assert.AreEqual(vecs.Length, mesh.VertexCount);
+            Assert.AreEqual(faces.Length, mesh.FaceCount);
+            Assert.AreEqual(24, mesh.HalfEdgeCount);
         }
     }
 }

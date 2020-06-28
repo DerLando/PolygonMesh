@@ -7,9 +7,9 @@ namespace PolygonMesh.Library.Mesh.Core
 {
     public static class TopologyAnalyzer
     {
-        public static bool IsClosedMesh(Kernel kernel)
-        {
-            return kernel.GetEdges.All(e => e.Pair != null);
-        }
+        //public static bool IsClosedMesh(Kernel kernel)
+        //{
+        //    return kernel.Edges.All(e => e.Pair != null);
+        //}
     }
 }

@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PolygonMesh.Library.Mesh.Core
+namespace PolygonMesh.Library.Models
 {
-    class HalfEdgeCollection : ElementsCollection<HalfEdge>
+    public class VertexModel : BaseModel
     {
+        public Vec3d Position { get; set; }
     }
 }
