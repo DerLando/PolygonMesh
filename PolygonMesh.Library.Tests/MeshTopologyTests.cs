@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PolygonMesh.IO.FileObj;
 using PolygonMesh.Library.Mesh.Elements;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace PolygonMesh.Library.Tests
             Assert.AreEqual(2, mesh.FaceCount);
             Assert.AreEqual(4, mesh.VertexCount);
             Assert.AreEqual(6, mesh.HalfEdgeCount);
+            SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
         }
     }
 }

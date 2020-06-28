@@ -20,6 +20,7 @@ namespace PolygonMesh.Library.Mesh.Core
         public int FaceCount => _kernel.FaceCount;
         public IReadOnlyList<VertexModel> Vertices => GetVertices();
         public IReadOnlyList<EdgeModel> HalfEdges => GetHalfEdges();
+        public IReadOnlyList<FaceModel> Faces => GetFaces();
 
         #region Helper methods
 
@@ -69,6 +70,24 @@ namespace PolygonMesh.Library.Mesh.Core
                         Index = Array.IndexOf(verts, edges[i].Target),
                         Position = edges[i].Target.Position
                     }
+                };
+            }
+
+            return models;
+        }
+
+        private IReadOnlyList<FaceModel> GetFaces()
+        {
+            var models = new FaceModel[FaceCount];
+            for (int i = 0; i < FaceCount; i++)
+            {
+                var iterator = new FaceVertexIterator(_kernel.Faces[i]);
+                var vertices = from vertex in iterator select FromVertex(vertex);
+
+                models[i] = new FaceModel
+                {
+                    Index = i,
+                    Vertices = vertices.ToArray()
                 };
             }
 

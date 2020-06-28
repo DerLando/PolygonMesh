@@ -37,7 +37,7 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
                 Face = newFace,
                 Next = end,
                 Previous = edges.Last(),
-                Origin = end.Origin,
+                Origin = start.Origin,
                 Pair = newEnd
             };
 
