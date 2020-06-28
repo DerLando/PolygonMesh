@@ -6,23 +6,16 @@ using System.Text;
 
 namespace PolygonMesh.Library.Mesh.Iterators
 {
-    public sealed class FaceVertexIterator : IEnumerable<Vertex>
+    /// <summary>
+    /// An iterator providing access to all Vertices in a <see cref="Face"/>
+    /// </summary>
+    public class FaceVertexIterator : IEnumerable<Vertex>
     {
         private HalfEdge _start;
 
-        public static FaceVertexIterator FromEdge(HalfEdge halfEdge)
+        public FaceVertexIterator(Face face)
         {
-            return new FaceVertexIterator { _start = halfEdge };
-        }
-
-        public static FaceVertexIterator FromFace(Face face)
-        {
-            return FaceVertexIterator.FromEdge(face.Start);
-        }
-
-        public static FaceVertexIterator FromVertex(Vertex vertex)
-        {
-            return FaceVertexIterator.FromEdge(vertex.Outgoing);
+            _start = face.Start;
         }
 
         public IEnumerator<Vertex> GetEnumerator()

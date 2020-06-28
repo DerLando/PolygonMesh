@@ -102,7 +102,7 @@ namespace PolygonMesh.Library.Mesh.Core
 
         public IEnumerable<Vertex> GetFaceVertices(int faceIndex)
         {
-            return FaceVertexIterator.FromFace(_faces.GetElement(faceIndex));
+            return new FaceVertexIterator(_faces.GetElement(faceIndex));
         }
     }
 }
