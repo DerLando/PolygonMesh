@@ -17,6 +17,9 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
             // get edges for face of both halfedges
             var edges = new EdgeIterator(start).ToArray();
 
+            // can't split triangles
+            if (edges.Length <= 3) return;
+
             // get the index of the end edge inside the edges array
             var endIndex = Array.IndexOf(edges, end);
 

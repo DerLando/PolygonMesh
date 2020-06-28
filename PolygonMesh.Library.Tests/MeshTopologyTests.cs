@@ -32,5 +32,28 @@ namespace PolygonMesh.Library.Tests
             Assert.AreEqual(6, mesh.HalfEdgeCount);
             SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
         }
+
+        [TestMethod]
+        public void SplitFace_ShouldWorkForComplicatedFile()
+        {
+            // Arrange
+            var path = "D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\torus.obj";
+            var vecs = SimpleParser.Parse(path, out var faces);
+            var mesh = Mesh.Core.Mesh.CreateFromPositions(vecs, faces);
+
+            // Act
+            var initialFaces = mesh.FaceCount;
+            var initialVertices = mesh.VertexCount;
+            for (int i = 0; i < mesh.FaceCount; i++)
+            {
+                mesh.SplitFace(i);
+            }
+
+            // Assert
+            Assert.AreEqual(initialVertices, mesh.VertexCount);
+            Assert.AreEqual(initialFaces * 2, mesh.FaceCount);
+            SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
+
+        }
     }
 }

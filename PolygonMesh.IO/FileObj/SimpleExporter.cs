@@ -2,6 +2,7 @@
 using PolygonMesh.Library.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -16,7 +17,10 @@ namespace PolygonMesh.IO.FileObj
         
         private static string WriteVertex(VertexModel vertex)
         {
-            return $"{VERTEX}{DELIMITER}{vertex.Position.X}{DELIMITER}{vertex.Position.Y}{DELIMITER}{vertex.Position.Z}";
+            return $"{VERTEX}{DELIMITER}" +
+                $"{vertex.Position.X.ToString(CultureInfo.InvariantCulture)}{DELIMITER}" +
+                $"{vertex.Position.Y.ToString(CultureInfo.InvariantCulture)}{DELIMITER}" +
+                $"{vertex.Position.Z.ToString(CultureInfo.InvariantCulture)}";
         }
 
         private static string WriteFace(FaceModel face)

@@ -1,6 +1,7 @@
 ﻿using PolygonMesh.Library.Mesh.Elements;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,9 +74,9 @@ namespace PolygonMesh.IO.FileObj
 		private static Vec3d ConvertToVec(string line)
 		{
 			var parts = line.Split(' ');
-			var x = double.Parse(parts[1]);
-			var y = double.Parse(parts[2]);
-			var z = double.Parse(parts[3]);
+			var x = double.Parse(parts[1], CultureInfo.InvariantCulture);
+			var y = double.Parse(parts[2], CultureInfo.InvariantCulture);
+			var z = double.Parse(parts[3], CultureInfo.InvariantCulture);
 
 			return new Vec3d(x, y, z);
 		}
