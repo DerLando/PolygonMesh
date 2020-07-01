@@ -19,6 +19,8 @@ namespace PolygonMesh.Library.Mesh.Core
             return _elements;
         }
 
+        public abstract bool Insert(T element);
+
         public T this[int index] { get => _elements[index]; set => _elements[index] = value; }
 
         public int Count => _elements.Count;

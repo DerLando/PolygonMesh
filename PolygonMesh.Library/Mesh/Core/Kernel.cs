@@ -62,61 +62,17 @@ namespace PolygonMesh.Library.Mesh.Core
         /// <returns>true on success, false on failure</returns>
         public bool InsertEdge(HalfEdge edge)
         {
-            // try to link up the edge
-            if(!EdgeLinker.TryLinkEdge(edge))
-                return false;
-
-            // add edge to inner collection
-            _halfEdges.Add(edge);
-
-            // enforce a valid edge pair
-            if (edge.Pair == null)
-            {
-                // try to find an already existing HalfEdge, that would make a good pair
-
-
-                // create pair edge, it has no linking information and is considered 'naked'
-                var pair = new HalfEdge
-                {
-                    Origin = edge.Next.Origin,
-                    Pair = edge
-                };
-
-                _halfEdges[HalfEdgeCount - 1].Pair = pair;
-                _halfEdges.Add(pair);
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Don't use this
-        /// </summary>
-        /// <param name="edge"></param>
-        /// <param name="pair"></param>
-        /// <returns></returns>
-        public bool InsertEdge(HalfEdge edge, HalfEdge pair)
-        {
-            // try to link up the edge
-            if (!EdgeLinker.TryLinkEdge(edge))
-                return false;
-
-            edge.Pair = pair;
-            pair.Pair = edge;
-
-            _halfEdges.Add(edge);
-            _halfEdges.Add(pair);
-
-            return true;
+            return _halfEdges.Insert(edge);
         }
 
         public bool InsertFace(Face face)
         {
-            // if no linking information is present, we have to abort
-            if (face.Start is null) return false;
+            return _faces.Insert(face);
+        }
 
-            _faces.Add(face);
-            return true;
+        public bool InsertFace(IReadOnlyList<HalfEdge> edges)
+        {
+            return _faces.Insert(edges);
         }
 
         public void SplitFace(HalfEdge start, HalfEdge end)
@@ -126,91 +82,99 @@ namespace PolygonMesh.Library.Mesh.Core
 
         #endregion
 
+        /// <summary>
+        /// Adds a new face to the kernel
+        /// </summary>
+        /// <param name="positions"></param>
         public void AddFace(IEnumerable<Vec3d> positions)
         {
-            var face = new Face();
             var edges = new List<HalfEdge>();
-            var vertices = new List<Vertex>();
 
+            // iterate over all positions
             foreach (var position in positions)
             {
+                // get a vertex instance for the current positions
                 var vertex = GetVertexForPosition(position);
+
+                // create a new halfedge originating from the current vertex and linked to the new face
                 var halfEdge = new HalfEdge 
                 { 
                     Origin = vertex,
-                    Face = face
                 };
 
+                // test if the vertex already has an outgoing edge assigned
                 if(vertex.Outgoing is null)
                     vertex.Outgoing = halfEdge;
 
-                vertices.Add(vertex);
                 edges.Add(halfEdge);
             }
 
-            EdgeLinker.LinkOrderedEdgeCollection(edges);
+            // Insert a face from the edges
+            InsertFace(edges);
 
-            face.Start = edges[0];
-
-            //foreach (var vertex in vertices)
-            //{
-            //    InsertVertex(vertex);
-            //}
-            InsertFace(face);
+            // iterate over all edges and insert them
             foreach (var edge in edges)
             {
                 InsertEdge(edge);
             }
         }
 
+        /// <summary>
+        /// Create a new kernel from a list of positions and a nested list of indices representing faces
+        /// </summary>
+        /// <param name="positions"></param>
+        /// <param name="faces"></param>
+        /// <returns></returns>
         internal static Kernel CreateFromPositions(IReadOnlyList<Vec3d> positions, IReadOnlyList<IReadOnlyList<int>> faces)
         {
+            // create new kernel
             var kernel = new Kernel();
+
+            // insert a vertex into the kernel for each position
             var vertices = (from position in positions select kernel.GetVertexForPosition(position)).ToArray();
-            var newFaces = new Face[faces.Count];
             var edges = new List<HalfEdge>();
 
+            // iterate over number of faces
             for (int i = 0; i < faces.Count; i++)
             {
-                newFaces[i] = new Face();
+                // empty list to hold halfedges of new face
                 var faceEdges = new List<HalfEdge>();
 
+                // get vertex indices and iterate over them
                 var indices = faces[i];
                 for (int j = 0; j < indices.Count; j++)
                 {
-                    var index = indices[j];
+                    var vertexIndex = indices[j];
 
+                    // create a new halfedge originating from the current vertexindex
                     var edge = new HalfEdge
                     {
-                        Face = newFaces[i],
-                        Origin = vertices[index],
+                        Origin = vertices[vertexIndex],
                     };
 
-                    if (vertices[index].Outgoing is null)
-                        vertices[index].Outgoing = edge;
+                    // assure outgoing edge on current vertex
+                    if (vertices[vertexIndex].Outgoing is null)
+                        vertices[vertexIndex].Outgoing = edge;
 
                     faceEdges.Add(edge);
                 }
 
-                EdgeLinker.LinkOrderedEdgeCollection(faceEdges);
-
-                newFaces[i].Start = faceEdges[0];
+                // insert a new face from the face edges
+                kernel.InsertFace(faceEdges);
 
                 edges.AddRange(faceEdges);
             }
 
+            // link all edges to their pairs
             EdgeLinker.LinkEdgePairs(ref edges);
 
-            foreach (var face in newFaces)
-            {
-                kernel.InsertFace(face);
-            }
-
+            // iterate over all edges and add to kernel
             foreach (var edge in edges)
             {
                 kernel.InsertEdge(edge);
             }
 
+            // return the kernel
             return kernel;
         }
 
