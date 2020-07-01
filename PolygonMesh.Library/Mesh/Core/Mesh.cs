@@ -121,7 +121,7 @@ namespace PolygonMesh.Library.Mesh.Core
         public static Mesh CreateSingleFace(IReadOnlyList<Vec3d> positions)
         {
             var kernel = new Kernel();
-            kernel.AddNewFace(positions);
+            kernel.AddFace(positions);
 
             return new Mesh { _kernel = kernel };
         }

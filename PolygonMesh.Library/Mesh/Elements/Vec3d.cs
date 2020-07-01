@@ -30,5 +30,13 @@ namespace PolygonMesh.Library.Mesh.Elements
                 Math.Abs(other.Y - Y) < epsilon &&
                 Math.Abs(other.Z - Z) < epsilon;
         }
+
+        public double DistanceToSquared(in Vec3d other)
+        {
+            return
+                Math.Pow(this.X - other.X, 2) +
+                Math.Pow(this.Y - other.Y, 2) +
+                Math.Pow(this.Z - other.Z, 2);
+        }
     }
 }

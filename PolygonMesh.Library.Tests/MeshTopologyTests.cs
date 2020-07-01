@@ -29,7 +29,7 @@ namespace PolygonMesh.Library.Tests
             // Assert
             Assert.AreEqual(2, mesh.FaceCount);
             Assert.AreEqual(4, mesh.VertexCount);
-            Assert.AreEqual(6, mesh.HalfEdgeCount);
+            Assert.AreEqual(10, mesh.HalfEdgeCount);
             SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
         }
 
@@ -44,7 +44,7 @@ namespace PolygonMesh.Library.Tests
             // Act
             var initialFaces = mesh.FaceCount;
             var initialVertices = mesh.VertexCount;
-            for (int i = 0; i < mesh.FaceCount; i++)
+            for (int i = 0; i < initialFaces; i++)
             {
                 mesh.SplitFace(i);
             }

@@ -17,9 +17,10 @@ namespace PolygonMesh.Library.Mesh.Core
     {
         #region private fields
 
-        private VertexCollection _vertices = new VertexCollection();
+        //private VertexCollection _vertices = new VertexCollection();
         private HalfEdgeCollection _halfEdges = new HalfEdgeCollection();
         private FaceCollection _faces = new FaceCollection();
+        private OcTree<Vertex> _vertices = new OcTree<Vertex>(.01);
 
         #endregion
 
@@ -29,7 +30,7 @@ namespace PolygonMesh.Library.Mesh.Core
         internal int FaceCount => _faces.Count;
         internal int HalfEdgeCount => _halfEdges.Count;
         internal IReadOnlyList<HalfEdge> Edges => _halfEdges.AsReadOnly();
-        internal IReadOnlyList<Vertex> Vertices => _vertices.AsReadOnly();
+        internal IReadOnlyList<Vertex> Vertices => _vertices.AsReadOnlyList();
         internal IReadOnlyList<Face> Faces => _faces.AsReadOnly();
 
         #endregion
@@ -37,24 +38,74 @@ namespace PolygonMesh.Library.Mesh.Core
         #region public topology methods
 
         /// <summary>
+        /// Creates (of finds an existing) vertex for the given position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public Vertex GetVertexForPosition(Vec3d position)
+        {
+            var vertex = new Vertex { Position = position };
+            if (_vertices.Insert(vertex, position))
+                return vertex;
+
+            return _vertices.FindClosest(position);
+        }
+
+        /// <summary>
         /// Inserts a <see cref="HalfEdge"/> instance into the kernel.
         /// For this to work the halfedge needs linking information present on its
         /// <see cref="HalfEdge.Next"/> and <see cref="HalfEdge.Previous" /> properties.
+        /// If no linking information is present for the <see cref="HalfEdge.Pair"/>, a new pair edge
+        /// will be created and inserted as a naked edge
         /// </summary>
         /// <param name="edge"></param>
         /// <returns>true on success, false on failure</returns>
         public bool InsertEdge(HalfEdge edge)
         {
-            // if no linking information is present on the edge, we have to abort
-            if (edge.Previous is null | edge.Next is null)
+            // try to link up the edge
+            if(!EdgeLinker.TryLinkEdge(edge))
                 return false;
 
-            edge.Previous.Next = edge;
-            edge.Next.Previous = edge;
+            // add edge to inner collection
+            _halfEdges.Add(edge);
 
-            //EdgeLinker.LinkOrderedEdgeCollection(new[] { edge.Previous, edge, edge.Next });
+            // enforce a valid edge pair
+            if (edge.Pair == null)
+            {
+                // try to find an already existing HalfEdge, that would make a good pair
+
+
+                // create pair edge, it has no linking information and is considered 'naked'
+                var pair = new HalfEdge
+                {
+                    Origin = edge.Next.Origin,
+                    Pair = edge
+                };
+
+                _halfEdges[HalfEdgeCount - 1].Pair = pair;
+                _halfEdges.Add(pair);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Don't use this
+        /// </summary>
+        /// <param name="edge"></param>
+        /// <param name="pair"></param>
+        /// <returns></returns>
+        public bool InsertEdge(HalfEdge edge, HalfEdge pair)
+        {
+            // try to link up the edge
+            if (!EdgeLinker.TryLinkEdge(edge))
+                return false;
+
+            edge.Pair = pair;
+            pair.Pair = edge;
 
             _halfEdges.Add(edge);
+            _halfEdges.Add(pair);
 
             return true;
         }
@@ -75,7 +126,7 @@ namespace PolygonMesh.Library.Mesh.Core
 
         #endregion
 
-        public void AddNewFace(IEnumerable<Vec3d> positions)
+        public void AddFace(IEnumerable<Vec3d> positions)
         {
             var face = new Face();
             var edges = new List<HalfEdge>();
@@ -83,14 +134,15 @@ namespace PolygonMesh.Library.Mesh.Core
 
             foreach (var position in positions)
             {
-                var vertex = new Vertex { Position = position };
+                var vertex = GetVertexForPosition(position);
                 var halfEdge = new HalfEdge 
                 { 
                     Origin = vertex,
                     Face = face
                 };
 
-                vertex.Outgoing = halfEdge;
+                if(vertex.Outgoing is null)
+                    vertex.Outgoing = halfEdge;
 
                 vertices.Add(vertex);
                 edges.Add(halfEdge);
@@ -100,14 +152,21 @@ namespace PolygonMesh.Library.Mesh.Core
 
             face.Start = edges[0];
 
-            _vertices.AddRange(vertices);
-            _faces.Add(face);
-            _halfEdges.AddRange(edges);
+            //foreach (var vertex in vertices)
+            //{
+            //    InsertVertex(vertex);
+            //}
+            InsertFace(face);
+            foreach (var edge in edges)
+            {
+                InsertEdge(edge);
+            }
         }
 
         internal static Kernel CreateFromPositions(IReadOnlyList<Vec3d> positions, IReadOnlyList<IReadOnlyList<int>> faces)
         {
-            var vertices = (from position in positions select new Vertex { Position = position }).ToArray();
+            var kernel = new Kernel();
+            var vertices = (from position in positions select kernel.GetVertexForPosition(position)).ToArray();
             var newFaces = new Face[faces.Count];
             var edges = new List<HalfEdge>();
 
@@ -142,12 +201,17 @@ namespace PolygonMesh.Library.Mesh.Core
 
             EdgeLinker.LinkEdgePairs(ref edges);
 
-            return new Kernel
+            foreach (var face in newFaces)
             {
-                _faces = new FaceCollection { _elements = newFaces.ToList() },
-                _halfEdges = new HalfEdgeCollection { _elements = edges },
-                _vertices = new VertexCollection { _elements = vertices.ToList() }
-            };
+                kernel.InsertFace(face);
+            }
+
+            foreach (var edge in edges)
+            {
+                kernel.InsertEdge(edge);
+            }
+
+            return kernel;
         }
 
         public IEnumerable<Vertex> GetFaceVertices(int faceIndex)

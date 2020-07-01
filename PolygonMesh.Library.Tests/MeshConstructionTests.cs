@@ -15,11 +15,12 @@ namespace PolygonMesh.Library.Tests
         public void SingleFace_ShouldWork()
         {
             // Arrange
+            var rand = new Random();
             var locations = new[]
             {
-                new Vec3d(0, 0, 0),
-                new Vec3d(1, 1, 0),
-                new Vec3d(-1, 1, 0)
+                new Vec3d(rand.Next(), rand.Next(), rand.Next()),
+                new Vec3d(rand.Next(), rand.Next(), rand.Next()),
+                new Vec3d(rand.Next(), rand.Next(), rand.Next())
             };
 
             // Act
@@ -28,7 +29,7 @@ namespace PolygonMesh.Library.Tests
 
             // Assert
             Assert.AreEqual(1, mesh.FaceCount);
-            Assert.AreEqual(3, mesh.HalfEdgeCount);
+            Assert.AreEqual(6, mesh.HalfEdgeCount);
             for (int i = 0; i < 3; i++)
             {
                 Assert.AreEqual(locations[i], mesh.Vertices[i].Position);

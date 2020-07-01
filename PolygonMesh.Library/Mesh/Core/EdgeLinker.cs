@@ -45,5 +45,41 @@ namespace PolygonMesh.Library.Mesh.Core
                 edges[i].Next = edges[next];
             }
         }
+
+        /// <summary>
+        /// Tries to link a given HalfEdge inbetween its previous and next edges
+        /// </summary>
+        /// <param name="edge">The HalfEdge to link</param>
+        /// <returns>true on success, false on failure</returns>
+        public static bool TryLinkEdge(HalfEdge edge)
+        {
+            // We can't link without any information
+            if (edge.Previous is null && edge.Next is null) return false;
+
+            HalfEdge previous;
+            HalfEdge next;
+
+            // we have next information
+            if(edge.Previous is null)
+            {
+                previous = edge.Next.Previous;
+                next = edge.Next;
+            }
+            else // we have previous information
+            {
+                previous = edge.Previous;
+                next = previous.Next;
+            }
+
+            // link other edges to this edge
+            previous.Next = edge;
+            next.Previous = edge;
+
+            // link this edge to other edges
+            edge.Previous = previous;
+            edge.Next = next;
+
+            return true;
+        }
     }
 }
