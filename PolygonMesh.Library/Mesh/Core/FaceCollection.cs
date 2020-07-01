@@ -23,6 +23,8 @@ namespace PolygonMesh.Library.Mesh.Core
         /// <returns></returns>
         public bool Insert(IReadOnlyList<HalfEdge> edges)
         {
+            if (edges.Count < 3) return false;
+
             // TODO: Check if ccw - ordered
             // establish circular link between edges
             EdgeLinker.LinkOrderedEdgeCollection(edges);

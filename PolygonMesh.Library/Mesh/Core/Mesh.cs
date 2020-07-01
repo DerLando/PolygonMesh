@@ -118,7 +118,7 @@ namespace PolygonMesh.Library.Mesh.Core
         /// </summary>
         /// <param name="positions">Positions in 3d space</param>
         /// <returns></returns>
-        public static Mesh CreateSingleFace(IReadOnlyList<Vec3d> positions)
+        public static Mesh CreateSingleFace(IEnumerable<Vec3d> positions)
         {
             var kernel = new Kernel();
             kernel.AddFace(positions);
@@ -150,6 +150,11 @@ namespace PolygonMesh.Library.Mesh.Core
             var start = _kernel.Faces[faceIndex].Start;
             var end = start.Next.Next;
             _kernel.SplitFace(start, end);
+        }
+
+        public void AddFace(IEnumerable<Vec3d> positions)
+        {
+            _kernel.AddFace(positions);
         }
 
         #endregion
