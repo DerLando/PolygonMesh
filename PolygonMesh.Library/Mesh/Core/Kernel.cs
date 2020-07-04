@@ -91,16 +91,6 @@ namespace PolygonMesh.Library.Mesh.Core
             return _faces.Remove(face);
         }
 
-        public void SplitFace(HalfEdge start, HalfEdge end)
-        {
-            SplitFaceOperation.Split(start, end, this);
-        }
-
-        public void SplitEdge(HalfEdge edge, double t)
-        {
-            SplitEdgeOperation.Split(edge, t, this);
-        }
-
         /// <summary>
         /// Removes all unused elements of the kernel
         /// </summary>

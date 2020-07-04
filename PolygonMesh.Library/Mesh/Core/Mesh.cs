@@ -1,6 +1,7 @@
 ﻿using PolygonMesh.Library.Extensions;
 using PolygonMesh.Library.Mesh.Elements;
 using PolygonMesh.Library.Mesh.Iterators;
+using PolygonMesh.Library.Mesh.TopologyOperations;
 using PolygonMesh.Library.Models;
 using System;
 using System.Collections.Generic;
@@ -166,6 +167,11 @@ namespace PolygonMesh.Library.Mesh.Core
         {
             var edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
             _kernel.SplitEdge(edges[edgeIndex], t);
+        }
+
+        public void CollapseEdge(int edgeIndex)
+        {
+
         }
 
         public void AddFace(IEnumerable<Vec3d> positions)

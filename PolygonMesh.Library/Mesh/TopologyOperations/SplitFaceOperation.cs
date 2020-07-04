@@ -11,7 +11,7 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
 {
     internal static class SplitFaceOperation
     {
-        internal static void Split(HalfEdge start, HalfEdge end, Kernel kernel)
+        internal static void SplitFace(this Kernel kernel, HalfEdge start, HalfEdge end)
         {
             // TODO: Error checks
 

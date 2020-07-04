@@ -9,7 +9,7 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
 {
     internal static class SplitEdgeOperation
     {
-        internal static void Split(HalfEdge edge, double t, Kernel kernel)
+        internal static void SplitEdge(this Kernel kernel, HalfEdge edge, double t)
         {
             // TODO: Error checks
             if (EdgeLinker.IsDummyPairEdge(edge))
