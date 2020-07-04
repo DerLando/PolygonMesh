@@ -54,11 +54,11 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
             }
 
             // add new edges
-            kernel.InsertEdge(newEnd);
-            kernel.InsertEdge(newStart);
+            kernel.Insert(newEnd);
+            kernel.Insert(newStart);
 
             // add new face
-            kernel.InsertFace(newFace);
+            kernel.Insert(newFace);
         }
     }
 }

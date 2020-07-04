@@ -120,10 +120,9 @@ namespace PolygonMesh.Library.Mesh.Core
         /// <returns></returns>
         public static Mesh CreateSingleFace(IEnumerable<Vec3d> positions)
         {
-            var kernel = new Kernel();
-            kernel.AddFace(positions);
-
-            return new Mesh { _kernel = kernel };
+            var mesh = new Mesh();
+            mesh.AddFace(positions);
+            return mesh;
         }
 
         #endregion
@@ -150,6 +149,11 @@ namespace PolygonMesh.Library.Mesh.Core
             var start = _kernel.Faces[faceIndex].Start;
             var end = start.Next.Next;
             _kernel.SplitFace(start, end);
+        }
+
+        public void SplitEdge(int edgeIndex, double t)
+        {
+            _kernel.SplitEdge(_kernel.Edges[edgeIndex], t);
         }
 
         public void AddFace(IEnumerable<Vec3d> positions)

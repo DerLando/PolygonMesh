@@ -25,8 +25,9 @@ namespace PolygonMesh.Library.Mesh.Iterators
         {
             do
             {
+                var edge = _current;
                 _current = _current.Next;
-                yield return _current.Previous;
+                yield return edge;
             } while (_current != _start);
         }
 

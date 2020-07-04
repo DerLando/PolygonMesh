@@ -53,7 +53,39 @@ namespace PolygonMesh.Library.Tests
             Assert.AreEqual(initialVertices, mesh.VertexCount);
             Assert.AreEqual(initialFaces * 2, mesh.FaceCount);
             SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
+        }
 
+        [TestMethod]
+        public void SplitEdge_ShouldWorkOnSimpleQuad()
+        {
+            // Arrange
+            var positions = new[]
+            {
+                new Vec3d(0, 0, 0),
+                new Vec3d(1, 0, 0),
+                new Vec3d(1, 1, 0),
+                new Vec3d(0, 1, 0),
+            };
+            var rand = new Random();
+            Mesh.Core.Mesh mesh = null;
+
+            for (int i = 0; i < 100; i++)
+            {
+                mesh = Mesh.Core.Mesh.CreateSingleFace(positions);
+
+                // Act
+                var index = rand.Next(0, 4);
+                var param = rand.Next(2, 8) / 10.0;
+                mesh.SplitEdge(index, param);
+
+                // Assert
+                Assert.AreEqual(1, mesh.FaceCount);
+                Assert.AreEqual(5, mesh.VertexCount);
+                Assert.AreEqual(10, mesh.HalfEdgeCount);
+
+            }
+
+            SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
         }
     }
 }

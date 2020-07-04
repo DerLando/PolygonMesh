@@ -1,4 +1,6 @@
 ﻿using PolygonMesh.Library.Mesh.Elements;
+using PolygonMesh.Library.Mesh.Iterators;
+using PolygonMesh.Library.Mesh.TopologyHelpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -40,6 +42,18 @@ namespace PolygonMesh.Library.Mesh.Core
 
             // insert the new face
             return Insert(face);
+        }
+
+        public override bool Remove(Face face)
+        {
+            // iterate over face edges
+            foreach (var edge in new EdgeIterator(face.Start))
+            {
+                EdgeLinker.UnlinkEdge(edge);
+            }
+
+            // remove face from inner collection
+            return _elements.Remove(face);
         }
     }
 }

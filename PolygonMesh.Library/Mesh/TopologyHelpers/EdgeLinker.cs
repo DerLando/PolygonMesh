@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PolygonMesh.Library.Mesh.Core
+namespace PolygonMesh.Library.Mesh.TopologyHelpers
 {
     public static class EdgeLinker
     {
@@ -78,6 +78,36 @@ namespace PolygonMesh.Library.Mesh.Core
             // link this edge to other edges
             edge.Previous = previous;
             edge.Next = next;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes all linking information from a given <see cref="HalfEdge"/>
+        /// </summary>
+        /// <param name="edge"></param>
+        public static void UnlinkEdge(HalfEdge edge)
+        {
+            // dummy pairs are already unlinked
+            if (IsDummyPairEdge(edge))
+                return;
+
+            // close gap between previous and next
+            edge.Previous.Next = edge.Next;
+            edge.Next.Previous = edge.Previous;
+
+            // set all linking on edge to null
+            edge.Face = null;
+            edge.Next = null;
+            edge.Previous = null;
+
+            // We keep pair and Origin information, this basically becomes a dummy pair edge to its pair
+        }
+
+        public static bool IsDummyPairEdge(HalfEdge edge)
+        {
+            if (edge.Previous != null || edge.Next != null || edge.Face != null)
+                return false;
 
             return true;
         }

@@ -1,5 +1,6 @@
 ﻿using PolygonMesh.Library.Mesh.Elements;
 using PolygonMesh.Library.Mesh.Iterators;
+using PolygonMesh.Library.Mesh.TopologyHelpers;
 using PolygonMesh.Library.Mesh.TopologyOperations;
 using System;
 using System.Collections.Generic;
@@ -29,9 +30,9 @@ namespace PolygonMesh.Library.Mesh.Core
         internal int VertexCount => _vertices.Count;
         internal int FaceCount => _faces.Count;
         internal int HalfEdgeCount => _halfEdges.Count;
-        internal IReadOnlyList<HalfEdge> Edges => _halfEdges.AsReadOnly();
+        internal IReadOnlyList<HalfEdge> Edges => _halfEdges;
         internal IReadOnlyList<Vertex> Vertices => _vertices.AsReadOnlyList();
-        internal IReadOnlyList<Face> Faces => _faces.AsReadOnly();
+        internal IReadOnlyList<Face> Faces => _faces;
 
         #endregion
 
@@ -60,24 +61,47 @@ namespace PolygonMesh.Library.Mesh.Core
         /// </summary>
         /// <param name="edge"></param>
         /// <returns>true on success, false on failure</returns>
-        public bool InsertEdge(HalfEdge edge)
+        public bool Insert(HalfEdge edge)
         {
             return _halfEdges.Insert(edge);
         }
 
-        public bool InsertFace(Face face)
+        public bool Insert(Face face)
         {
             return _faces.Insert(face);
         }
 
-        public bool InsertFace(IReadOnlyList<HalfEdge> edges)
+        public bool Insert(IReadOnlyList<HalfEdge> edges)
         {
             return _faces.Insert(edges);
         }
 
+        public bool Remove(HalfEdge edge)
+        {
+            return _halfEdges.Remove(edge);
+        }
+
+        public bool Remove(Face face)
+        {
+            return _faces.Remove(face);
+        }
+
         public void SplitFace(HalfEdge start, HalfEdge end)
         {
-            TopologyOperation.SplitFace(start, end, this);
+            SplitFaceOperation.Split(start, end, this);
+        }
+
+        public void SplitEdge(HalfEdge edge, double t)
+        {
+            SplitEdgeOperation.Split(edge, t, this);
+        }
+
+        /// <summary>
+        /// Removes all unused elements of the kernel
+        /// </summary>
+        public void CleanUp()
+        {
+
         }
 
         #endregion
@@ -88,6 +112,9 @@ namespace PolygonMesh.Library.Mesh.Core
         /// <param name="positions"></param>
         public void AddFace(IEnumerable<Vec3d> positions)
         {
+            // No bad faces please :(
+            if (positions.Count() < 3) return;
+
             var edges = new List<HalfEdge>();
 
             // iterate over all positions
@@ -110,12 +137,12 @@ namespace PolygonMesh.Library.Mesh.Core
             }
 
             // Insert a face from the edges
-            InsertFace(edges);
+            Insert(edges);
 
             // iterate over all edges and insert them
             foreach (var edge in edges)
             {
-                InsertEdge(edge);
+                _halfEdges.Add(edge);
             }
         }
 
@@ -160,7 +187,7 @@ namespace PolygonMesh.Library.Mesh.Core
                 }
 
                 // insert a new face from the face edges
-                kernel.InsertFace(faceEdges);
+                kernel.Insert(faceEdges);
 
                 edges.AddRange(faceEdges);
             }
@@ -171,7 +198,7 @@ namespace PolygonMesh.Library.Mesh.Core
             // iterate over all edges and add to kernel
             foreach (var edge in edges)
             {
-                kernel.InsertEdge(edge);
+                kernel.Insert(edge);
             }
 
             // return the kernel
