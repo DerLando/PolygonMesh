@@ -81,6 +81,11 @@ namespace PolygonMesh.Library.Mesh.Core
             _halfEdges.Add(edge);
         }
 
+        public bool Remove(Vertex vertex)
+        {
+            return _vertices.Remove((vertex.Position, vertex));
+        }
+
         public bool Remove(HalfEdge edge)
         {
             return _halfEdges.Remove(edge);

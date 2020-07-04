@@ -63,7 +63,6 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
 
             // remove original edges
             kernel.Remove(edge);
-            kernel.Remove(pair);
 
             // add new halves
             if (!isDummy)

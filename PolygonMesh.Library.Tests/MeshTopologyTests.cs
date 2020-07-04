@@ -108,11 +108,12 @@ namespace PolygonMesh.Library.Tests
 
                 // Act
                 var index = rand.Next(0, 4);
+                mesh.CollapseEdge(0, index);
 
                 // Assert
                 Assert.AreEqual(1, mesh.FaceCount);
-                Assert.AreEqual(5, mesh.VertexCount);
-                Assert.AreEqual(10, mesh.HalfEdgeCount);
+                Assert.AreEqual(3, mesh.VertexCount);
+                Assert.AreEqual(6, mesh.HalfEdgeCount);
 
             }
 

@@ -17,7 +17,7 @@ namespace PolygonMesh.Library.Mesh.Iterators
             _current = _start;
         }
 
-        public IEnumerator<HalfEdge> GetOutgoingEnumerator()
+        public IEnumerable<HalfEdge> GetOutgoingEnumerator()
         {
             do
             {

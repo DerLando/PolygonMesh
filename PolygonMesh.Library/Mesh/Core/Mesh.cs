@@ -171,7 +171,13 @@ namespace PolygonMesh.Library.Mesh.Core
 
         public void CollapseEdge(int edgeIndex)
         {
+            _kernel.CollapseEdge(_kernel.Edges[edgeIndex]);
+        }
 
+        public void CollapseEdge(int faceIndex, int edgeIndex)
+        {
+            var edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
+            _kernel.CollapseEdge(edges[edgeIndex]);
         }
 
         public void AddFace(IEnumerable<Vec3d> positions)

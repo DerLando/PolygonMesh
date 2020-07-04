@@ -48,14 +48,41 @@ namespace PolygonMesh.Library.Mesh.Core
             }
         }
 
+        /// <summary>
+        /// Removes a <see cref="HalfEdge"/>. This also removes its pair,
+        /// as HalfEdges are not allowed to be single ;)
+        /// </summary>
+        /// <param name="edge"></param>
+        /// <returns></returns>
         public override bool Remove(HalfEdge edge)
         {
-            // easy for dummy edges
-            if (EdgeLinker.IsDummyPairEdge(edge))
-                return _elements.Remove(edge);
+            // handle active references to edge
+            if (!EdgeLinker.IsDummyPairEdge(edge))
+            {
+                RemoveReferences(edge);
+            }
 
+            // handle active references to its pair
+            if (!EdgeLinker.IsDummyPairEdge(edge.Pair))
+            {
+                RemoveReferences(edge.Pair);
+            }
+
+            // unlink the edges
+            EdgeLinker.UnlinkEdge(edge);
+            EdgeLinker.UnlinkEdge(edge.Pair);
+
+            // remove edges from inner collection
+            _elements.Remove(edge);
+            _elements.Remove(edge.Pair);
+
+            return true;
+        }
+
+        private void RemoveReferences(HalfEdge edge)
+        {
             // make sure origin does not point to this
-            if(edge.Origin.Outgoing == edge)
+            if (edge.Origin.Outgoing == edge)
             {
                 VertexLinker.TryShiftOutgoing(edge.Origin);
             }
@@ -63,12 +90,6 @@ namespace PolygonMesh.Library.Mesh.Core
             // make sure face does not point to this
             if (edge.Face.Start == edge)
                 FaceLinker.TryShiftStart(edge.Face);
-
-            // unlink the edge
-            EdgeLinker.UnlinkEdge(edge);
-
-            // remove edge from inner collection
-            return _elements.Remove(edge);
         }
 
     }

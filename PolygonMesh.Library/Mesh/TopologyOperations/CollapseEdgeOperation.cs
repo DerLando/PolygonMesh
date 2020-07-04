@@ -27,7 +27,7 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
         private static void CollapseNakedEdge(HalfEdge edge, Kernel kernel)
         {
             kernel.Remove(edge);
-            kernel.Remove(edge.Pair);
+            kernel.RemoveUnusedVertices();
         }
     }
 }

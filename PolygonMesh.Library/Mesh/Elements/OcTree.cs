@@ -56,5 +56,10 @@ namespace PolygonMesh.Library.Mesh.Elements
         }
 
         public int Count => _points.Count;
+
+        public bool Remove((Vec3d, T) data)
+        {
+            return _points.Remove(data);
+        }
     }
 }
