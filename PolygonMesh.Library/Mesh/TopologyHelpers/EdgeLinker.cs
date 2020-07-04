@@ -43,6 +43,9 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
 
                 edges[i].Previous = edges[prev];
                 edges[i].Next = edges[next];
+
+                if(edges[i].Pair != null)
+                    UpdatePair(edges[i]);
             }
         }
 
@@ -104,11 +107,31 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
             // We keep pair and Origin information, this basically becomes a dummy pair edge to its pair
         }
 
+        /// <summary>
+        /// Determines if the given <see cref="HalfEdge"/> is a 'dummy' pair,
+        /// meaning it is paired to another edge, but not to any face.
+        /// </summary>
+        /// <param name="edge"></param>
+        /// <returns></returns>
         public static bool IsDummyPairEdge(HalfEdge edge)
         {
             if (edge.Previous != null || edge.Next != null || edge.Face != null)
                 return false;
 
+            return true;
+        }
+
+        /// <summary>
+        /// Updates the pair edge of the given <see cref="HalfEdge"/>.
+        /// </summary>
+        /// <param name="edge"></param>
+        /// <returns>True if the pair edge was updated, false if nothing has changed</returns>
+        public static bool UpdatePair(HalfEdge edge)
+        {
+            if (!IsDummyPairEdge(edge.Pair))
+                return false;
+
+            edge.Pair.Origin = edge.Next.Origin;
             return true;
         }
     }

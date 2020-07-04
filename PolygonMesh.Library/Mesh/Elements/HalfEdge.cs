@@ -44,5 +44,10 @@ namespace PolygonMesh.Library.Mesh.Elements
         public Vertex Target => Pair.Origin;
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"HalfEdge from {Origin} to {Target}";
+        }
     }
 }

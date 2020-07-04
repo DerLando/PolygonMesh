@@ -1,6 +1,7 @@
 ﻿using PolygonMesh.Library.Mesh.Core;
 using PolygonMesh.Library.Mesh.Elements;
 using PolygonMesh.Library.Mesh.Iterators;
+using PolygonMesh.Library.Mesh.TopologyHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,15 +48,23 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
             // pair up the new end
             newEnd.Pair = newStart;
 
-            // assign second half of edges array to new face
-            for (int i = endIndex; i < edges.Length; i++)
-            {
-                edges[i].Face = newFace;
-            }
+            // establish circular link for first face
+            var firstFaceEdges = edges.Take(endIndex).ToList();
+            firstFaceEdges.Add(newEnd);
+            EdgeLinker.LinkOrderedEdgeCollection(firstFaceEdges);
 
-            // add new edges
-            kernel.Insert(newEnd);
-            kernel.Insert(newStart);
+            // hacky re-assignment
+            newEnd.Face.Start = newEnd.Next;
+
+            // establish circular link for second face
+            var secondFaceEdges = edges.Skip(endIndex).ToList();
+            secondFaceEdges.Insert(0, newStart);
+            EdgeLinker.LinkOrderedEdgeCollection(secondFaceEdges);
+            secondFaceEdges.ForEach(e => e.Face = newFace);
+
+            // Add new edges to kernel
+            kernel.Add(newEnd);
+            kernel.Add(newStart);
 
             // add new face
             kernel.Insert(newFace);

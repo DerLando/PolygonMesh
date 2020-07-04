@@ -24,9 +24,10 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
             // convert to a vertex
             var vertex = kernel.GetVertexForPosition(vec);
 
-            // store edge pair
+            // store edge pair, and conditionals
             var pair = edge.Pair;
             var isDummy = EdgeLinker.IsDummyPairEdge(pair);
+            var isStart = edge.Face.Start == edge;
 
             // create new edges
             var firstHalf = new HalfEdge
@@ -79,6 +80,12 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
                 kernel.Insert(firstHalf);
                 kernel.Insert(secondHalf);
             }
+
+            // set start to first half
+            if(isStart)
+                firstHalf.Face.Start = firstHalf;
+
+            // TODO: first and second half are connected wierdly
         }
     }
 }

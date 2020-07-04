@@ -76,6 +76,11 @@ namespace PolygonMesh.Library.Mesh.Core
             return _faces.Insert(edges);
         }
 
+        public void Add(HalfEdge edge)
+        {
+            _halfEdges.Add(edge);
+        }
+
         public bool Remove(HalfEdge edge)
         {
             return _halfEdges.Remove(edge);

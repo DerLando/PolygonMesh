@@ -17,6 +17,11 @@ namespace PolygonMesh.Library.Mesh.Elements
             Z = z;
         }
 
+        public override string ToString()
+        {
+            return $"Vec3d (X: {X}, Y: {Y}, Z: {Z})";
+        }
+
         #region Operator overloading
 
         public static Vec3d operator +(in Vec3d a) => a;

@@ -12,21 +12,22 @@ namespace PolygonMesh.Library.Mesh.Iterators
     public class FaceVertexIterator : IEnumerable<Vertex>
     {
         private HalfEdge _start;
+        private HalfEdge _current;
 
         public FaceVertexIterator(Face face)
         {
             _start = face.Start;
+            _current = _start;
         }
 
         public IEnumerator<Vertex> GetEnumerator()
         {
-            HalfEdge current = _start;
-
             do
             {
-                current = current.Next;
-                yield return current.Origin;
-            } while (current != _start);
+                var vertex = _current.Origin;
+                _current = _current.Next;
+                yield return vertex;
+            } while (_current != _start);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

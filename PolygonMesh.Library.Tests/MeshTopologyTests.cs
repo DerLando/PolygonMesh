@@ -87,5 +87,74 @@ namespace PolygonMesh.Library.Tests
 
             SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
         }
+
+        [TestMethod]
+        public void SplitFace_And_SplitEdge_Together_Can_Turn_Simple_Quad_Into_Two_Rectangles()
+        {
+            // Arrange
+            var positions = new[]
+            {
+                new Vec3d(0, 0, 0),
+                new Vec3d(1, 0, 0),
+                new Vec3d(1, 1, 0),
+                new Vec3d(0, 1, 0),
+            };
+            Mesh.Core.Mesh mesh = Mesh.Core.Mesh.CreateSingleFace(positions);
+
+            // Act
+            mesh.SplitEdge(0, 0, 0.5);
+            mesh.SplitEdge(0, 3, 0.5);
+            mesh.SplitFace(0, 1, 4);
+
+            // Assert
+            //Assert.AreEqual(6, mesh.VertexCount);
+            //Assert.AreEqual(14, mesh.HalfEdgeCount);
+            //Assert.AreEqual(2, mesh.FaceCount);
+            SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
+        }
+
+        [TestMethod]
+        public void SplitFace_And_SplitEdge_Together_Can_Create_Complex_Mesh()
+        {
+            // building the mesh from this: https://w3.cs.jmu.edu/bowersjc/page/courses/spring17/cs480/labs/images/final_dcel.png
+
+            // Arrange
+            var positions = new[]
+            {
+                new Vec3d(0, 0, 0),
+                new Vec3d(2, 0, 0),
+                new Vec3d(2, 1, 0),
+                new Vec3d(0, 1, 0),
+            };
+            Mesh.Core.Mesh mesh = Mesh.Core.Mesh.CreateSingleFace(positions);
+
+            // Act
+            // split in half
+            mesh.SplitEdge(0, 0, 0.5);
+            mesh.SplitEdge(0, 3, 0.5);
+            mesh.SplitFace(0, 1, 4);
+
+            // split right quad in two triangles
+            mesh.SplitFace(0, 0, 2);
+
+            // split left quad in three triangles
+            mesh.SplitEdge(1, 0, 0.5);
+            mesh.SplitFace(1, 1, 3);
+            mesh.SplitFace(mesh.FaceCount - 1, 1, 3);
+
+            // split middle triangle of split left quad in half
+            mesh.SplitEdge(mesh.FaceCount - 1, 0, 0.5);
+            mesh.SplitEdge(mesh.FaceCount - 1, 3, 0.5);
+            mesh.SplitFace(mesh.FaceCount - 1, 1, 4);
+
+            // split lower quad of split triangle in half
+            mesh.SplitEdge(mesh.FaceCount - 2, 0, 0.5);
+            mesh.SplitEdge(mesh.FaceCount - 2, 3, 0.5);
+            mesh.SplitFace(mesh.FaceCount - 2, 1, 4);
+
+            // Assert
+            SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
+        }
+
     }
 }

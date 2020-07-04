@@ -18,5 +18,10 @@ namespace PolygonMesh.Library.Mesh.Elements
         /// The Position of the Vertex in 3d Space
         /// </summary>
         public Vec3d Position { get; set; }
+
+        public override string ToString()
+        {
+            return $"Vertex, Position: {Position}";
+        }
     }
 }

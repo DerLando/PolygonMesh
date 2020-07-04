@@ -151,9 +151,21 @@ namespace PolygonMesh.Library.Mesh.Core
             _kernel.SplitFace(start, end);
         }
 
+        public void SplitFace(int faceIndex, int firstEdgeIndex, int otherEdgeIndex)
+        {
+            var edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
+            _kernel.SplitFace(edges[firstEdgeIndex], edges[otherEdgeIndex]);
+        }
+
         public void SplitEdge(int edgeIndex, double t)
         {
             _kernel.SplitEdge(_kernel.Edges[edgeIndex], t);
+        }
+
+        public void SplitEdge(int faceIndex, int edgeIndex, double t)
+        {
+            var edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
+            _kernel.SplitEdge(edges[edgeIndex], t);
         }
 
         public void AddFace(IEnumerable<Vec3d> positions)
