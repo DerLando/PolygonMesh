@@ -17,5 +17,6 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
 
             return true;
         }
+
     }
 }

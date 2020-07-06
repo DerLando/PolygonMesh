@@ -86,7 +86,8 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
         }
 
         /// <summary>
-        /// Removes all linking information from a given <see cref="HalfEdge"/>
+        /// Removes all linking information from a given <see cref="HalfEdge"/>.
+        /// Also closes the gap between the edges previous and next to this edge.
         /// </summary>
         /// <param name="edge"></param>
         public static void UnlinkEdge(HalfEdge edge)

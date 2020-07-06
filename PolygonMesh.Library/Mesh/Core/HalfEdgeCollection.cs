@@ -79,6 +79,10 @@ namespace PolygonMesh.Library.Mesh.Core
             return true;
         }
 
+        /// <summary>
+        /// Removes all references of faces or vertices to the given edge
+        /// </summary>
+        /// <param name="edge"></param>
         private void RemoveReferences(HalfEdge edge)
         {
             // make sure origin does not point to this

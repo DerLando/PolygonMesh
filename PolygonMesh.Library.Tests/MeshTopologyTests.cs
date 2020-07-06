@@ -102,7 +102,7 @@ namespace PolygonMesh.Library.Tests
             var rand = new Random();
             Mesh.Core.Mesh mesh = null;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 4; i++)
             {
                 mesh = Mesh.Core.Mesh.CreateSingleFace(positions);
 
@@ -118,6 +118,36 @@ namespace PolygonMesh.Library.Tests
             }
 
             SimpleExporter.Export("D:\\Git\\PolygonMesh\\PolygonMesh.Library.Tests\\Resources\\test.obj", mesh);
+        }
+
+        [TestMethod]
+        public void SplitFace_And_CollapseEdge_Are_Inverse()
+        {
+            // Arrange
+            var positions = new[]
+            {
+                new Vec3d(0, 0, 0),
+                new Vec3d(1, 0, 0),
+                new Vec3d(1, 1, 0),
+                new Vec3d(0, 1, 0),
+            };
+            var rand = new Random();
+            Mesh.Core.Mesh mesh = null;
+
+            for (int i = 0; i < 4; i++)
+            {
+                mesh = Mesh.Core.Mesh.CreateSingleFace(positions);
+
+                // Act
+                var index = rand.Next(0, 4);
+                mesh.SplitFace(0, index, (index + 2) % 4);
+                mesh.CollapseEdge(1, 2);
+
+                // Assert
+                Assert.AreEqual(1, mesh.FaceCount);
+                Assert.AreEqual(4, mesh.VertexCount);
+                Assert.AreEqual(8, mesh.HalfEdgeCount);
+            }
         }
 
         [TestMethod]

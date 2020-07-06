@@ -44,11 +44,23 @@ namespace PolygonMesh.Library.Mesh.Core
             return Insert(face);
         }
 
+        /// <summary>
+        /// Removes a face from the kernel, by cutting a hole in the mesh
+        /// All Edges belonging to this face will become unlinked, naked edges
+        /// </summary>
+        /// <param name="face"></param>
+        /// <returns></returns>
         public override bool Remove(Face face)
         {
+            if(face.Start is null)
+            {
+                return _elements.Remove(face);
+            }
+
             // iterate over face edges
             foreach (var edge in new EdgeIterator(face.Start))
             {
+                // unlink the current edge
                 EdgeLinker.UnlinkEdge(edge);
             }
 

@@ -14,20 +14,25 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
             if (EdgeLinker.IsDummyPairEdge(edge))
                 edge = edge.Pair;
 
+            // if the edge is naked, we don't have to change the other face
             if (EdgeLinker.IsDummyPairEdge(edge.Pair))
             {
                 CollapseNakedEdge(edge, kernel);
                 return;
             }
 
-            
-
+            CollapseEdgeBetweenFaces(edge, kernel);
         }
 
         private static void CollapseNakedEdge(HalfEdge edge, Kernel kernel)
         {
             kernel.Remove(edge);
             kernel.RemoveUnusedVertices();
+        }
+
+        private static void CollapseEdgeBetweenFaces(HalfEdge edge, Kernel kernel)
+        {
+            kernel.MergeFaces(edge.Face, edge.Pair.Face);
         }
     }
 }
