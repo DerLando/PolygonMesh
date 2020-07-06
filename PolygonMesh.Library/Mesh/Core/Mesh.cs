@@ -145,17 +145,24 @@ namespace PolygonMesh.Library.Mesh.Core
         /// Placeholder method
         /// </summary>
         /// <param name="faceIndex"></param>
-        public void SplitFace(int faceIndex)
+        public bool SplitFace(int faceIndex)
         {
             var start = _kernel.Faces[faceIndex].Start;
             var end = start.Next.Next;
-            _kernel.SplitFace(start, end);
+            return _kernel.TrySplitFace(start, end, out _);
         }
 
-        public void SplitFace(int faceIndex, int firstEdgeIndex, int otherEdgeIndex)
+        public bool SplitFace(int faceIndex, int firstEdgeIndex, int otherEdgeIndex, out (int, int) partsIndices)
         {
+            partsIndices = (-1, -1);
             var edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
-            _kernel.SplitFace(edges[firstEdgeIndex], edges[otherEdgeIndex]);
+            var success = _kernel.TrySplitFace(edges[firstEdgeIndex], edges[otherEdgeIndex], out _);
+
+            if (success)
+                // Hardcoded!!
+                partsIndices = (faceIndex, FaceCount - 1);
+
+            return success;
         }
 
         /// <summary>

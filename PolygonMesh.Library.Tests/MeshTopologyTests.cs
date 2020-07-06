@@ -140,7 +140,7 @@ namespace PolygonMesh.Library.Tests
 
                 // Act
                 var index = rand.Next(0, 4);
-                mesh.SplitFace(0, index, (index + 2) % 4);
+                mesh.SplitFace(0, index, (index + 2) % 4, out _);
                 mesh.CollapseEdge(1, 2);
 
                 // Assert
@@ -166,7 +166,7 @@ namespace PolygonMesh.Library.Tests
             // Act
             mesh.SplitEdge(0, 0, 0.5, out _);
             mesh.SplitEdge(0, 3, 0.5, out _);
-            mesh.SplitFace(0, 1, 4);
+            mesh.SplitFace(0, 1, 4, out _);
 
             // Assert
             //Assert.AreEqual(6, mesh.VertexCount);
@@ -194,25 +194,25 @@ namespace PolygonMesh.Library.Tests
             // split in half
             mesh.SplitEdge(0, 0, 0.5, out _);
             mesh.SplitEdge(0, 3, 0.5, out _);
-            mesh.SplitFace(0, 1, 4);
+            mesh.SplitFace(0, 1, 4, out _);
 
             // split right quad in two triangles
-            mesh.SplitFace(0, 0, 2);
+            mesh.SplitFace(0, 0, 2, out _);
 
             // split left quad in three triangles
             mesh.SplitEdge(1, 0, 0.5, out _);
-            mesh.SplitFace(1, 1, 3);
-            mesh.SplitFace(mesh.FaceCount - 1, 1, 3);
+            mesh.SplitFace(1, 1, 3, out _);
+            mesh.SplitFace(mesh.FaceCount - 1, 1, 3, out _);
 
             // split middle triangle of split left quad in half
             mesh.SplitEdge(mesh.FaceCount - 1, 0, 0.5, out _);
             mesh.SplitEdge(mesh.FaceCount - 1, 3, 0.5, out _);
-            mesh.SplitFace(mesh.FaceCount - 1, 1, 4);
+            mesh.SplitFace(mesh.FaceCount - 1, 1, 4, out _);
 
             // split lower quad of split triangle in half
             mesh.SplitEdge(mesh.FaceCount - 2, 0, 0.5, out _);
             mesh.SplitEdge(mesh.FaceCount - 2, 3, 0.5, out _);
-            mesh.SplitFace(mesh.FaceCount - 2, 1, 4);
+            mesh.SplitFace(mesh.FaceCount - 2, 1, 4, out _);
 
             // Assert
             Assert.AreEqual(11, mesh.VertexCount);

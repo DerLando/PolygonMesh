@@ -11,15 +11,16 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
 {
     internal static class SplitFaceOperation
     {
-        internal static void SplitFace(this Kernel kernel, HalfEdge start, HalfEdge end)
+        internal static bool TrySplitFace(this Kernel kernel, HalfEdge start, HalfEdge end, out(Face, Face) parts)
         {
+            parts = (null, null);
             // TODO: Error checks
 
             // get edges for face of both halfedges
             var edges = new EdgeIterator(start).ToArray();
 
             // can't split triangles
-            if (edges.Length <= 3) return;
+            if (edges.Length <= 3) return false;
 
             // get the index of the end edge inside the edges array
             var endIndex = Array.IndexOf(edges, end);
@@ -68,6 +69,10 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
 
             // add new face
             kernel.Insert(newFace);
+
+            // prepare output
+            parts = (start.Face, newFace);
+            return true;
         }
     }
 }
