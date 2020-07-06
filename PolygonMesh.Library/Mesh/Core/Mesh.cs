@@ -158,15 +158,45 @@ namespace PolygonMesh.Library.Mesh.Core
             _kernel.SplitFace(edges[firstEdgeIndex], edges[otherEdgeIndex]);
         }
 
-        public void SplitEdge(int edgeIndex, double t)
+        /// <summary>
+        /// Splits the edge at the given index in two parts.
+        /// </summary>
+        /// <param name="edgeIndex">Index of edge to split</param>
+        /// <param name="t">Normalized parameter along edge length, between 0 and 1</param>
+        /// <param name="partIndices">Indices of both parts of the split edge</param>
+        /// <returns>true on success, false on failure</returns>
+        public bool SplitEdge(int edgeIndex, double t, out (int, int) partIndices)
         {
-            _kernel.SplitEdge(_kernel.Edges[edgeIndex], t);
+            partIndices = (-1, -1);
+
+            var success = _kernel.TrySplitEdge(_kernel.Edges[edgeIndex], t, out var parts);
+
+            if (success)
+                partIndices = (_kernel.Edges.IndexOf(parts.Item1), _kernel.Edges.IndexOf(parts.Item2));
+            return success;
         }
 
-        public void SplitEdge(int faceIndex, int edgeIndex, double t)
+        /// <summary>
+        /// Splits the edge at the given face-local index in two parts.
+        /// </summary>
+        /// <param name="faceIndex">The index of the face, of which the edge should be split</param>
+        /// <param name="edgeIndex">The face-local index of the edge to split</param>
+        /// <param name="t">Normalized parameter along edge length, between 0 and 1</param>
+        /// <param name="partIndices">Face-local indices of both parts of the split edge</param>
+        /// <returns>true on success, false on failure</returns>
+        public bool SplitEdge(int faceIndex, int edgeIndex, double t, out (int, int) partIndices)
         {
+            partIndices = (-1, -1);
             var edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
-            _kernel.SplitEdge(edges[edgeIndex], t);
+            var success = _kernel.TrySplitEdge(edges[edgeIndex], t, out var parts);
+
+            if (success)
+            {
+                edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
+                partIndices = (Array.IndexOf(edges, parts.Item1), Array.IndexOf(edges, parts.Item2));
+            }
+
+            return success;
         }
 
         public void CollapseEdge(int edgeIndex)

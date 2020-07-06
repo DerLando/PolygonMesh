@@ -9,14 +9,16 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
 {
     internal static class SplitEdgeOperation
     {
-        internal static void SplitEdge(this Kernel kernel, HalfEdge edge, double t)
+        internal static bool TrySplitEdge(this Kernel kernel, HalfEdge edge, double t, out (HalfEdge, HalfEdge) parts)
         {
+            parts = (null, null);
+
             // TODO: Error checks
             if (EdgeLinker.IsDummyPairEdge(edge))
                 edge = edge.Pair;
 
             // test valid param
-            if (0 > t || t > 1) return;
+            if (0 > t || t > 1) return false;
 
             // calculate vec at param
             var vec = edge.Origin.Position.VecAtParameter(edge.Target.Position, t);
@@ -84,7 +86,9 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
             if(isStart)
                 firstHalf.Face.Start = firstHalf;
 
-            // TODO: first and second half are connected wierdly
+            parts = (firstHalf, secondHalf);
+
+            return true;
         }
     }
 }

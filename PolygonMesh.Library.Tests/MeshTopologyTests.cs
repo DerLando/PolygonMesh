@@ -76,7 +76,7 @@ namespace PolygonMesh.Library.Tests
                 // Act
                 var index = rand.Next(0, 4);
                 var param = rand.Next(2, 8) / 10.0;
-                mesh.SplitEdge(index, param);
+                mesh.SplitEdge(index, param, out _);
 
                 // Assert
                 Assert.AreEqual(1, mesh.FaceCount);
@@ -164,8 +164,8 @@ namespace PolygonMesh.Library.Tests
             Mesh.Core.Mesh mesh = Mesh.Core.Mesh.CreateSingleFace(positions);
 
             // Act
-            mesh.SplitEdge(0, 0, 0.5);
-            mesh.SplitEdge(0, 3, 0.5);
+            mesh.SplitEdge(0, 0, 0.5, out _);
+            mesh.SplitEdge(0, 3, 0.5, out _);
             mesh.SplitFace(0, 1, 4);
 
             // Assert
@@ -192,26 +192,26 @@ namespace PolygonMesh.Library.Tests
 
             // Act
             // split in half
-            mesh.SplitEdge(0, 0, 0.5);
-            mesh.SplitEdge(0, 3, 0.5);
+            mesh.SplitEdge(0, 0, 0.5, out _);
+            mesh.SplitEdge(0, 3, 0.5, out _);
             mesh.SplitFace(0, 1, 4);
 
             // split right quad in two triangles
             mesh.SplitFace(0, 0, 2);
 
             // split left quad in three triangles
-            mesh.SplitEdge(1, 0, 0.5);
+            mesh.SplitEdge(1, 0, 0.5, out _);
             mesh.SplitFace(1, 1, 3);
             mesh.SplitFace(mesh.FaceCount - 1, 1, 3);
 
             // split middle triangle of split left quad in half
-            mesh.SplitEdge(mesh.FaceCount - 1, 0, 0.5);
-            mesh.SplitEdge(mesh.FaceCount - 1, 3, 0.5);
+            mesh.SplitEdge(mesh.FaceCount - 1, 0, 0.5, out _);
+            mesh.SplitEdge(mesh.FaceCount - 1, 3, 0.5, out _);
             mesh.SplitFace(mesh.FaceCount - 1, 1, 4);
 
             // split lower quad of split triangle in half
-            mesh.SplitEdge(mesh.FaceCount - 2, 0, 0.5);
-            mesh.SplitEdge(mesh.FaceCount - 2, 3, 0.5);
+            mesh.SplitEdge(mesh.FaceCount - 2, 0, 0.5, out _);
+            mesh.SplitEdge(mesh.FaceCount - 2, 3, 0.5, out _);
             mesh.SplitFace(mesh.FaceCount - 2, 1, 4);
 
             // Assert
