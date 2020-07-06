@@ -109,7 +109,7 @@ namespace PolygonMesh.Library.Mesh.Core
         /// <param name="positions">Positions in 3d space</param>
         /// <param name="faces">collections of indices, matching the faces to be generated from the positions</param>
         /// <returns></returns>
-        public static Mesh CreateFromPositions(IReadOnlyList<Vec3d> positions, IReadOnlyList<IReadOnlyList<int>> faces)
+        public static Mesh CreateFromPositions(IReadOnlyList<Vec3d> positions, IEnumerable<IEnumerable<int>> faces)
         {
             return new Mesh { _kernel = Kernel.CreateFromPositions(positions, faces) };
         }
@@ -178,6 +178,11 @@ namespace PolygonMesh.Library.Mesh.Core
         {
             var edges = new EdgeIterator(_kernel.Faces[faceIndex].Start).ToArray();
             _kernel.CollapseEdge(edges[edgeIndex]);
+        }
+
+        public bool MergeFaces(int firstFaceIndex, int otherFaceIndex)
+        {
+            return _kernel.MergeFaces(_kernel.Faces[firstFaceIndex], _kernel.Faces[otherFaceIndex]);
         }
 
         public void AddFace(IEnumerable<Vec3d> positions)

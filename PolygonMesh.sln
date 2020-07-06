@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolygonMesh.Library", "PolygonMesh.Library\PolygonMesh.Library.csproj", "{35A50C81-90C1-4927-A810-26149553514D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolygonMesh.Library.Tests", "PolygonMesh.Library.Tests\PolygonMesh.Library.Tests.csproj", "{8DEA9216-26A5-4DD3-9A46-57BF3E3A679B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolygonMesh.IO", "PolygonMesh.IO\PolygonMesh.IO.csproj", "{B8BFAD32-4B9B-4E3B-B447-BB9190B70C01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolygonMesh.RhinoPlugIn", "PolygonMesh.RhinoPlugIn\PolygonMesh.RhinoPlugIn.csproj", "{B9E56B04-85D1-4091-AAC8-1484B7ED22B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{B8BFAD32-4B9B-4E3B-B447-BB9190B70C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8BFAD32-4B9B-4E3B-B447-BB9190B70C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8BFAD32-4B9B-4E3B-B447-BB9190B70C01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9E56B04-85D1-4091-AAC8-1484B7ED22B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9E56B04-85D1-4091-AAC8-1484B7ED22B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9E56B04-85D1-4091-AAC8-1484B7ED22B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9E56B04-85D1-4091-AAC8-1484B7ED22B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

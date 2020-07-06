@@ -152,7 +152,7 @@ namespace PolygonMesh.Library.Mesh.Core
         /// <param name="positions"></param>
         /// <param name="faces"></param>
         /// <returns></returns>
-        internal static Kernel CreateFromPositions(IReadOnlyList<Vec3d> positions, IReadOnlyList<IReadOnlyList<int>> faces)
+        internal static Kernel CreateFromPositions(IReadOnlyList<Vec3d> positions, IEnumerable<IEnumerable<int>> faces)
         {
             // create new kernel
             var kernel = new Kernel();
@@ -162,17 +162,15 @@ namespace PolygonMesh.Library.Mesh.Core
             var edges = new List<HalfEdge>();
 
             // iterate over number of faces
-            for (int i = 0; i < faces.Count; i++)
+            foreach (var face in faces)
             {
                 // empty list to hold halfedges of new face
                 var faceEdges = new List<HalfEdge>();
 
                 // get vertex indices and iterate over them
-                var indices = faces[i];
-                for (int j = 0; j < indices.Count; j++)
+                var indices = face;
+                foreach (var vertexIndex in indices)
                 {
-                    var vertexIndex = indices[j];
-
                     // create a new halfedge originating from the current vertexindex
                     var edge = new HalfEdge
                     {
