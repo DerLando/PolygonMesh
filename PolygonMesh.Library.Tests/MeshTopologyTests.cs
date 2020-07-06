@@ -192,27 +192,27 @@ namespace PolygonMesh.Library.Tests
 
             // Act
             // split in half
-            mesh.SplitEdge(0, 0, 0.5, out _);
-            mesh.SplitEdge(0, 3, 0.5, out _);
-            mesh.SplitFace(0, 1, 4, out _);
+            mesh.SplitEdge(0, 0, 0.5, out var firstEdgeIndices);
+            mesh.SplitEdge(0, 3, 0.5, out var secondEdgeIndices);
+            mesh.SplitFace(0, firstEdgeIndices.Item2, secondEdgeIndices.Item2, out _);
 
             // split right quad in two triangles
             mesh.SplitFace(0, 0, 2, out _);
 
             // split left quad in three triangles
-            mesh.SplitEdge(1, 0, 0.5, out _);
-            mesh.SplitFace(1, 1, 3, out _);
-            mesh.SplitFace(mesh.FaceCount - 1, 1, 3, out _);
+            mesh.SplitEdge(1, 0, 0.5, out firstEdgeIndices);
+            mesh.SplitFace(1, firstEdgeIndices.Item2, 3, out var facePartIndices);
+            mesh.SplitFace(facePartIndices.Item2, 1, 3, out facePartIndices);
 
             // split middle triangle of split left quad in half
-            mesh.SplitEdge(mesh.FaceCount - 1, 0, 0.5, out _);
-            mesh.SplitEdge(mesh.FaceCount - 1, 3, 0.5, out _);
-            mesh.SplitFace(mesh.FaceCount - 1, 1, 4, out _);
+            mesh.SplitEdge(facePartIndices.Item2, 0, 0.5, out firstEdgeIndices);
+            mesh.SplitEdge(facePartIndices.Item2, 3, 0.5, out secondEdgeIndices);
+            mesh.SplitFace(facePartIndices.Item2, firstEdgeIndices.Item2, secondEdgeIndices.Item2, out facePartIndices);
 
             // split lower quad of split triangle in half
-            mesh.SplitEdge(mesh.FaceCount - 2, 0, 0.5, out _);
-            mesh.SplitEdge(mesh.FaceCount - 2, 3, 0.5, out _);
-            mesh.SplitFace(mesh.FaceCount - 2, 1, 4, out _);
+            mesh.SplitEdge(facePartIndices.Item1, 0, 0.5, out firstEdgeIndices);
+            mesh.SplitEdge(facePartIndices.Item1, 3, 0.5, out secondEdgeIndices);
+            mesh.SplitFace(facePartIndices.Item1, firstEdgeIndices.Item2, secondEdgeIndices.Item2, out _);
 
             // Assert
             Assert.AreEqual(11, mesh.VertexCount);

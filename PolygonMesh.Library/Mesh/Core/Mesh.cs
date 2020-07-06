@@ -152,6 +152,14 @@ namespace PolygonMesh.Library.Mesh.Core
             return _kernel.TrySplitFace(start, end, out _);
         }
 
+        /// <summary>
+        /// Splits a face between the origins of the given face-edges.
+        /// </summary>
+        /// <param name="faceIndex"></param>
+        /// <param name="firstEdgeIndex"></param>
+        /// <param name="otherEdgeIndex"></param>
+        /// <param name="partsIndices"></param>
+        /// <returns></returns>
         public bool SplitFace(int faceIndex, int firstEdgeIndex, int otherEdgeIndex, out (int, int) partsIndices)
         {
             partsIndices = (-1, -1);
