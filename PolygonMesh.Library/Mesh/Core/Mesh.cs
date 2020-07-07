@@ -214,6 +214,11 @@ namespace PolygonMesh.Library.Mesh.Core
             return success;
         }
 
+        public void Kis()
+        {
+            _kernel.Kis();
+        }
+
         public void CollapseEdge(int edgeIndex)
         {
             _kernel.CollapseEdge(_kernel.Edges[edgeIndex]);

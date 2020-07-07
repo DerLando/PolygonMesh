@@ -29,6 +29,14 @@ namespace PolygonMesh.Library.Mesh.Elements
         public static Vec3d operator +(in Vec3d a, in Vec3d b) => new Vec3d(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         public static Vec3d operator -(in Vec3d a, in Vec3d b) => a + (-b);
         public static Vec3d operator *(in Vec3d a, double rfs) => new Vec3d(a.X * rfs, a.Y * rfs, a.Z * rfs);
+        public static Vec3d operator /(in Vec3d a, double rfs) => new Vec3d(a.X / rfs, a.Y / rfs, a.Z / rfs);
+
+        #endregion
+
+        #region static properties
+
+        private static  Vec3d _zero = new Vec3d(0, 0, 0);
+        public static ref readonly Vec3d Zero => ref _zero;
 
         #endregion
 
@@ -72,6 +80,18 @@ namespace PolygonMesh.Library.Mesh.Elements
         public Vec3d VecAtParameter(in Vec3d other, double t)
         {
             return this + (other - this) * t;
+        }
+
+        public static Vec3d Average(IReadOnlyCollection<Vec3d> vecs)
+        {
+            var result = Vec3d.Zero;
+
+            foreach (var vector in vecs)
+            {
+                result = result + vector;
+            }
+
+            return result / vecs.Count;
         }
 
         #endregion

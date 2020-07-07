@@ -2,6 +2,7 @@
 using PolygonMesh.Library.Mesh.Iterators;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PolygonMesh.Library.Mesh.TopologyHelpers
@@ -38,6 +39,15 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
             }
 
             return false;
+        }
+
+        internal static Vec3d GetFaceCenter(this Face face)
+        {
+            return 
+                Vec3d
+                .Average(new FaceVertexIterator(face)
+                .Select(v => v.Position)
+                .ToList());
         }
     }
 }

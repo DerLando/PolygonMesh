@@ -39,6 +39,10 @@ namespace PolygonMesh.RhinoPlugIn
 
             var mesh = objRef.Mesh();
             var poly = mesh.ToPolygonMesh();
+            poly.Kis();
+
+            doc.Objects.Replace(objRef, poly.ToRhinoMesh());
+            doc.Views.Redraw();
 
             return Result.Success;
         }

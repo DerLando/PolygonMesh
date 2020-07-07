@@ -52,6 +52,9 @@ namespace PolygonMesh.Library.Mesh.Core
             return _vertices.FindClosest(position);
         }
 
+        // TODO: GetHalfEdgeForPositions helper method
+        // TODO: This will ensure we can't create duplicate halfedges
+
         /// <summary>
         /// Inserts a <see cref="HalfEdge"/> instance into the kernel.
         /// For this to work the halfedge needs linking information present on its
@@ -76,6 +79,11 @@ namespace PolygonMesh.Library.Mesh.Core
             return _faces.Insert(edges);
         }
 
+        /// <summary>
+        /// Add a new HalfEdge without any linking checks.
+        /// A valid pair will be enforced
+        /// </summary>
+        /// <param name="edge"></param>
         public void Add(HalfEdge edge)
         {
             _halfEdges.Add(edge);
