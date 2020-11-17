@@ -11,6 +11,27 @@ namespace PolygonMesh.Library.Tests
     public class MeshTopologyTests
     {
         [TestMethod]
+        public void SimpleQuad_ShouldHaveValidTopology()
+        {
+            // Arrange
+            var positions = new[]
+            {
+                new Vec3d(0, 0, 0),
+                new Vec3d(1, 0, 0),
+                new Vec3d(1, 1, 0),
+                new Vec3d(0, 1, 0),
+            };
+            var mesh = Mesh.Core.Mesh.CreateSingleFace(positions);
+
+            // Assert
+            Assert.AreEqual(4, mesh.VertexCount);
+            for (int i = 0; i < 4; i++)
+            {
+                Assert.AreEqual(2, mesh.GetVertexNeighbours(i).Count);
+            }
+        }
+
+        [TestMethod]
         public void SplitFace_ShouldWorkForSimpleQuad()
         {
             // Arrange

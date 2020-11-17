@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FsCheck;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PolygonMesh.Library.Mesh.Core;
 using PolygonMesh.Library.Mesh.Elements;
 using System;
@@ -11,71 +12,68 @@ namespace PolygonMesh.Library.Tests
     [TestClass]
     public class MeshFaceTests
     {
+
         [TestMethod]
-        public void Faces_Can_Have_Arbitrary_Number_Of_Vertices_Bigger_Then_3()
+        public void Faces_Cannot_Have_1_Vertex()
         {
-            var rand = new Random();
+            // initialize
+            var mesh = new Mesh.Core.Mesh();
+            Func<Vec3d, bool> addSingularFaceSucceeds = v =>
+                {
+                    mesh.AddFace(new[] { v });
+                    return mesh.FaceCount == 0;
+                };
 
-            for (int i = 0; i < 100; i++)
-            {
-                // Arrange
-                var vertexCount = rand.Next(3, 100);
-                var locations = 
-                    from index in Enumerable.Range(0, vertexCount) 
-                    select new Vec3d(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
-
-                // Act
-                var mesh = Mesh.Core.Mesh.CreateSingleFace(locations);
-
-                // Assert
-                Assert.AreEqual(1, mesh.FaceCount);
-                Assert.AreEqual(vertexCount * 2, mesh.HalfEdgeCount);
-            }
+            Prop.ForAll(addSingularFaceSucceeds).QuickCheckThrowOnFailure();
         }
 
         [TestMethod]
-        public void Faces_Cannot_Have_Less_Than_3_Vertices()
+        public void Faces_Cannot_Have_2_Vertices()
         {
-            // initialize
-            var rand = new Random();
+            // initialice
             var mesh = new Mesh.Core.Mesh();
-
-            for (int i = 0; i < 100; i++)
+            Func<Vec3d, Vec3d, bool> addLineFaceSucceeds = (v0, v1) =>
             {
-                // Arrange
-                var locations =
-                    from index in Enumerable.Range(0, rand.Next(0, 3))
-                    select new Vec3d(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
+                mesh.AddFace(new[] { v0, v1 });
+                return mesh.FaceCount == 0;
+            };
 
-                // Act
-                mesh.AddFace(locations);
+            Prop.ForAll(addLineFaceSucceeds).QuickCheckThrowOnFailure();
+        }
 
-                // Assert
-                Assert.AreEqual(0, mesh.FaceCount);
-            }
+        [TestMethod]
+        public void Faces_Can_Have_Arbitrary_Number_Of_Vertices_Bigger_Then_3()
+        {
+            Func<Vec3d[], bool> addFaceSucceeds = vs =>
+            {
+                // prop tests before this ensure the early exit here is sound
+                if (vs.Length < 3) return true;
+
+                var mesh = Mesh.Core.Mesh.CreateSingleFace(vs);
+
+                return (mesh.FaceCount == 1) && (mesh.HalfEdgeCount == vs.Length);
+            };
+
+            Prop.ForAll(addFaceSucceeds).QuickCheckThrowOnFailure();
+
         }
 
         [TestMethod]
         public void Faces_Cannot_Be_Added_Twice()
         {
             // initialize
-            var rand = new Random();
-
-            for (int i = 0; i < 100; i++)
+            Func<Vec3d, Vec3d, Vec3d, bool> addFaceTwiceSucceeds = (v0, v1, v2) =>
             {
-                // Arrange
                 var mesh = new Mesh.Core.Mesh();
-                var locations =
-                    from index in Enumerable.Range(0, rand.Next(3, 100))
-                    select new Vec3d(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
 
-                // Act
-                mesh.AddFace(locations);
-                mesh.AddFace(locations);
+                mesh.AddFace(new[] { v0, v1, v2 });
+                mesh.AddFace(new[] { v0, v1, v2 });
 
-                // Assert
-                Assert.AreEqual(1, mesh.FaceCount);
-            }
+                return mesh.FaceCount == 1;
+            };
+
+            Prop.ForAll(addFaceTwiceSucceeds).QuickCheckThrowOnFailure();
+
         }
     }
 }
