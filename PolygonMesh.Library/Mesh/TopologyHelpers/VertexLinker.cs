@@ -16,6 +16,7 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
                 var iter =
                     new VertexEdgeRingIterator(vertex)
                     .GetOutgoingEnumerator()
+                    .Where(e => !EdgeLinker.IsDummyPairEdge(e)) // Only shift to a valid edge
                     .ToArray();
 
                 if (iter.Length <= 1)

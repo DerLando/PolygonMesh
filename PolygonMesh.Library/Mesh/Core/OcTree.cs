@@ -1,9 +1,10 @@
-﻿using System;
+﻿using PolygonMesh.Library.Mesh.Elements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PolygonMesh.Library.Mesh.Elements
+namespace PolygonMesh.Library.Mesh.Core
 {
     /// <summary>
     /// Simple OcTree implementation, will be replaced by something better later
@@ -18,6 +19,12 @@ namespace PolygonMesh.Library.Mesh.Elements
             _tolerance = tolerance;
         }
 
+        /// <summary>
+        /// Inserts some data at the given position
+        /// </summary>
+        /// <param name="data">The data to insert</param>
+        /// <param name="position">The position to insert the data at</param>
+        /// <returns>True on success, False if already some data present at the given position</returns>
         public bool Insert(T data, Vec3d position)
         {
             for (int i = 0; i < _points.Count; i++)
@@ -32,6 +39,11 @@ namespace PolygonMesh.Library.Mesh.Elements
             return true;
         }
 
+        /// <summary>
+        /// Finds the data stored closest to the given position
+        /// </summary>
+        /// <param name="position">The position to query data close to</param>
+        /// <returns></returns>
         public T FindClosest(Vec3d position)
         {
             double minDistance = double.MaxValue;

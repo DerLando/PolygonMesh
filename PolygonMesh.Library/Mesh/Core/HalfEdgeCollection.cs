@@ -91,6 +91,9 @@ namespace PolygonMesh.Library.Mesh.Core
                 VertexLinker.TryShiftOutgoing(edge.Origin);
             }
 
+            // face might already be unlinked
+            if (edge.Face == null) return;
+
             // make sure face does not point to this
             if (edge.Face.Start == edge)
                 FaceLinker.TryShiftStart(edge.Face);

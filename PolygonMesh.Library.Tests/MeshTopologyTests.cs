@@ -110,7 +110,7 @@ namespace PolygonMesh.Library.Tests
         }
 
         [TestMethod]
-        public void CollapseEdge_Should_Work_On_Simple_Quad()
+        public void CollapseEdge_Should_Work_On_Simple_Quad() // How would a collapsed edge on a quad look like?
         {
             // Arrange
             var positions = new[]

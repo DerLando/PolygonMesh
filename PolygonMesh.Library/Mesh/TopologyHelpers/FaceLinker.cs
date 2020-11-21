@@ -11,6 +11,7 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
         internal static bool TryShiftStart(Face face)
         {
             var iter = new EdgeIterator(face.Start).GetEnumerator();
+            // TODO: This is messy!
             iter.MoveNext();
             iter.MoveNext();
             face.Start = iter.Current;

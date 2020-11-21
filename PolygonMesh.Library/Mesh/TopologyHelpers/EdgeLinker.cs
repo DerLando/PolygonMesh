@@ -1,4 +1,5 @@
-﻿using PolygonMesh.Library.Mesh.Elements;
+﻿using PolygonMesh.Library.Mesh.Core;
+using PolygonMesh.Library.Mesh.Elements;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -101,7 +102,7 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
             edge.Next.Previous = edge.Previous;
 
             // set all linking on edge to null
-            edge.Face = null;
+            edge.Face = Kernel.Outside;
             edge.Next = null;
             edge.Previous = null;
 
@@ -116,10 +117,8 @@ namespace PolygonMesh.Library.Mesh.TopologyHelpers
         /// <returns></returns>
         public static bool IsDummyPairEdge(HalfEdge edge)
         {
-            if (edge.Previous != null || edge.Next != null || edge.Face != null)
-                return false;
-
-            return true;
+            // TODO: Faces on edges should never be null, this is a bug!
+            return edge.Face == Kernel.Outside || edge.Face == null;
         }
 
         /// <summary>

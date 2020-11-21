@@ -26,6 +26,8 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
                 // get vertex for center
                 var centerVertex = kernel.GetVertexForPosition(center);
 
+                var newCenter = true;
+
                 // iterate over face edges
                 foreach (var edge in new EdgeIterator(face.Start))
                 {
@@ -36,18 +38,31 @@ namespace PolygonMesh.Library.Mesh.TopologyOperations
                     edge.Face = newFace;
 
                     // create an edge from center to origin of current edge
-                    var incoming = new HalfEdge
+                    if(!kernel.TryGetHalfEdgeBetweenVertices(centerVertex, edge.Origin, out var incoming))
                     {
-                        Face = newFace,
-                        Origin = centerVertex
-                    };
+                        incoming = new HalfEdge
+                        {
+                            Face = newFace,
+                            Origin = centerVertex
+                        };
+                    }
 
                     // create an edge from current edge target to center
-                    var outgoing = new HalfEdge
+                    if(!kernel.TryGetHalfEdgeBetweenVertices(edge.Target, centerVertex, out var outgoing))
                     {
-                        Face = newFace,
-                        Origin = edge.Target,
-                    };
+                        outgoing = new HalfEdge
+                        {
+                            Face = newFace,
+                            Origin = edge.Target,
+                        };
+                    }
+
+                    // link up center vertex on first iteration
+                    if (newCenter)
+                    {
+                        centerVertex.Outgoing = incoming;
+                        newCenter = false;
+                    }
 
                     // link up edges
                     EdgeLinker.LinkOrderedEdgeCollection(new[] { incoming, edge, outgoing });

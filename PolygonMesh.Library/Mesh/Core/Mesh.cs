@@ -111,7 +111,7 @@ namespace PolygonMesh.Library.Mesh.Core
         /// <returns></returns>
         public static Mesh CreateFromPositions(IReadOnlyList<Vec3d> positions, IEnumerable<IEnumerable<int>> faces)
         {
-            return new Mesh { _kernel = Kernel.CreateFromPositions(positions, faces) };
+            return new Mesh { _kernel = Kernel.CreateFromPositionsUnchecked(positions, faces) };
         }
 
         /// <summary>
@@ -235,9 +235,9 @@ namespace PolygonMesh.Library.Mesh.Core
             return _kernel.MergeFaces(_kernel.Faces[firstFaceIndex], _kernel.Faces[otherFaceIndex]);
         }
 
-        public void AddFace(IEnumerable<Vec3d> positions)
+        public bool AddFace(IEnumerable<Vec3d> positions)
         {
-            _kernel.AddFace(positions);
+            return _kernel.AddFace(positions);
         }
 
         #endregion
